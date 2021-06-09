@@ -3,10 +3,11 @@ library(dplyr)
 # library(tidyr)   # replace_na
 # library(tibble)  # column_to_rownames
 
-# NAME <- 'H3K36me3_MCF-7.ENCFF783EAZ.hg19'
-NAME <- 'H3K36me3_MCF-7.ENCFF994KPZ.hg19'
+NAME <- 'H3K36me3_MCF-7.ENCFF783EAZ.hg19'
+# NAME <- 'H3K36me3_MCF-7.ENCFF994KPZ.hg19'
 
 OUT_DIR <- 'Results/'
+DATA_DIR <- 'data/'
 
 bed_df <- read.delim(paste0('/data', NAME, '.bed'), as.is = TRUE, header = FALSE)
 colnames(bed_df) <- c('chrom', 'start', 'end', 'name', 'score')
@@ -24,4 +25,9 @@ ggplot(bed_df) +
   ggtitle(NAME, subtitle = sprintf('Number of peaks = %s', nrow(bed_df))) +
   theme_bw()
 ggsave(paste0('filter_peaks.', NAME, '.filtered.hist.pdf'), path = OUT_DIR)
+
+bed_df %>%
+  select(-len) %>%
+  write.table(file=paste0(DATA_DIR, NAME ,'.filtered.bed'),
+              col.names = FALSE, row.names = FALSE, sep = '\t', quote = FALSE)
 
